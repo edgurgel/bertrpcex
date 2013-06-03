@@ -29,12 +29,12 @@ defmodule BertrpcEx.Worker do
 
   def handle_call({module, func, args}, _from, server_info) do
     {:ok, socket} = establish_connection(server_info)
-    data = :bert.encode({:call, module, func, args})
+    data = Bertex.encode({:call, module, func, args})
     :ok = :gen_tcp.send(socket, data)
     reply = case :gen_tcp.recv(socket, 0, @timeout) do
       {:ok, recv_data} ->
         Lager.debug("Received data")
-        case :bert.decode(recv_data) do
+        case Bertex.decode(recv_data) do
           {:reply, result} ->
             Lager.debug("Received #{result}")
             {:reply, result, server_info}
