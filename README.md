@@ -1,4 +1,4 @@
-# BERT-RPC Erlang client
+# BERT-RPC Elixir client
 
 A pool of BERT-RPC clients
 
