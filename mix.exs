@@ -10,6 +10,7 @@ defmodule BertrpcEx.Mixfile do
   # Configuration for the OTP application
   def application do
     [ applications: [ :crypto,
+                      :poolboy,
                       :exlager],
       env: [
         pools: [
