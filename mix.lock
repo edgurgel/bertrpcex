@@ -1,5 +1,5 @@
-[ "bertex": {:git,"https://github.com/edgurgel/bertex.git","6731d149b84f89694b4429c8ec8ee2d065c48ccc",[]},
-  "exlager": {:git,"https://github.com/khia/exlager.git","f8dd0715d7668290d7d02a4517acfee4e8be885c",[]},
-  "goldrush": {:git,"https://github.com/DeadZen/goldrush.git","7ff9b03e4038e83732b241d92ccee2322c4ece5e",[tag: "7ff9b03"]},
+[ "bertex": {:git,"git://github.com/edgurgel/bertex.git","6731d149b84f89694b4429c8ec8ee2d065c48ccc",[tag: "1.1.0"]},
+  "exlager": {:git,"git://github.com/khia/exlager.git","f8dd0715d7668290d7d02a4517acfee4e8be885c",[]},
+  "goldrush": {:git,"git://github.com/DeadZen/goldrush.git","7ff9b03e4038e83732b241d92ccee2322c4ece5e",[tag: "879c69874a"]},
   "lager": {:git,"https://github.com/basho/lager.git","dc23b34ad40de2473c36d1a2bfeca4910279cc3f",[]},
-  "poolboy": {:git,"https://github.com/devinus/poolboy.git","91b68de43d49bcccf2631016febda70b20d7aa75",[tag: "1.0.0"]} ]
+  "poolboy": {:git,"git://github.com/devinus/poolboy.git","91b68de43d49bcccf2631016febda70b20d7aa75",[tag: "1.0.0"]} ]
