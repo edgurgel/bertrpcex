@@ -4,7 +4,7 @@ defmodule BertrpcEx.Mixfile do
   def project do
     [ app: :bertrpcex,
       version: "0.0.1",
-      deps: deps ]
+      deps: deps(Mix.env) ]
   end
 
   # Configuration for the OTP application
@@ -23,9 +23,15 @@ defmodule BertrpcEx.Mixfile do
     mod: { BertrpcEx, [] }]
   end
 
-  defp deps do
+  defp deps(:dev) do
     [ {:poolboy, github: "devinus/poolboy", tag: "1.0.0"},
       {:bertex, github: "edgurgel/bertex", tag: "1.1.0"},
       {:exlager, %r".*", github: "khia/exlager"} ]
   end
+
+  defp deps(:test) do
+    deps(:dev) ++
+     [ {:meck, github: "eproxus/meck", tag: "0.7.2" } ]
+  end
+
 end

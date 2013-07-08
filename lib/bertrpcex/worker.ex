@@ -60,7 +60,7 @@ defmodule BertrpcEx.Worker do
 
   def handle_cast({module, func, args}, server_info) do
     {:ok, socket} = establish_connection(server_info)
-    data = :bert.encode({:cast, module, func, args})
+    data = Bertex.encode({:cast, module, func, args})
     case :gen_tcp.send(socket, data) do
       :ok -> :ok
       {:error, reason} -> Lager.error('Error while sending ~p, reason: ~p', [data, reason])
