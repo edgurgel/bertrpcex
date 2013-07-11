@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/edgurgel/bertrpcex.png?branch=master)](https://travis-ci.org/edgurgel/bertrpcex)
+
 # BERT-RPC Elixir client
 
 A pool of BERT-RPC clients
