@@ -4,7 +4,7 @@ defmodule BertrpcEx.Mixfile do
   def project do
     [ app: :bertrpcex,
       version: "0.0.2",
-      elixir: "~> 0.9.3",
+      elixir: "~> 0.10.0",
       deps: deps(Mix.env) ]
   end
 
@@ -27,7 +27,7 @@ defmodule BertrpcEx.Mixfile do
   defp deps(:dev) do
     [ {:poolboy, github: "devinus/poolboy", tag: "1.0.0"},
       {:bertex, github: "edgurgel/bertex", tag: "1.1.0"},
-      {:exlager, %r".*", github: "khia/exlager"} ]
+      {:exlager, github: "khia/exlager"} ]
   end
 
   defp deps(:test) do
