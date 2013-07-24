@@ -26,7 +26,7 @@ defmodule BertrpcEx.Mixfile do
 
   defp deps(:dev) do
     [ {:poolboy, github: "devinus/poolboy", tag: "1.0.0"},
-      {:bertex, github: "edgurgel/bertex", tag: "1.1.0"},
+      {:bertex, github: "edgurgel/bertex", tag: "1.1.1"},
       {:exlager, github: "khia/exlager"} ]
   end
 
