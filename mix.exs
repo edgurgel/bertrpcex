@@ -3,7 +3,7 @@ defmodule BertrpcEx.Mixfile do
 
   def project do
     [ app: :bertrpcex,
-      version: "0.0.3",
+      version: "0.0.4",
       elixir: "~> 0.10.1",
       deps: deps(Mix.env) ]
   end
