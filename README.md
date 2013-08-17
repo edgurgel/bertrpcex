@@ -11,30 +11,23 @@ bertrpcex uses poolboy to have pools of workers that connect/encode/decode BERT-
 The configuration is done directly on each pool, this is part of the .app (as example):
 
 ```elixir
-{env, [
-    {pools, [
-      {ext, [
-        {size, 10},
-        {max_overflow, 20}
-        ], [
-        {hostname, {127,0,0,1}},
-        {port, 8000}
-        ]},
-      {messages_controller, [
-        {size, 5},
-        {max_overflow, 10}
-        ], [
-        {hostname, {127,0,0,1}},
-        {port, 9999}
-        ]}
-      ]}
-    ]}
+env: [
+  pools: [
+    {[:ext, :nat],
+      [size: 10,
+       max_overflow: 20],
+      [servers: [
+        [host: {127,0,0,1}, port: 8000],
+        [host: {127,0,0,1}, port: 7999] ]
+      ]
+    }
+  ]
+],
 ```
 
 This configuration means:
 
-* Module ext is hosted at 127.0.0.1 at 8000 on a pool of size 10 and max_overflow 20
-* Module messages_controller is hosted at 127.0.0.1 at 9999 on a pool of size 5 and max overflow 10
+Module ext and nat are hosted at 127.0.0.1 at 8000 and 7999 on pools of size 10 and max_overflow 20 each
 
 Usage:
 
