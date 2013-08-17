@@ -11,9 +11,11 @@ defmodule BertrpcEx.Worker do
   end
 
   def init(args) do
-    host = Keyword.get(args, :host)
-    port = Keyword.get(args, :port)
-    {:ok, ServerInfo.new(port: port, host: host)}
+    if Enum.all?([:host, :port], Keyword.has_key?(args, &1)) do
+      {:ok, ServerInfo.new(port: args[:port], host: args[:host])}
+    else
+      {:stop, {:error, "Host and Port must be defined"}}
+    end
   end
 
   def establish_connection(server_info) do
