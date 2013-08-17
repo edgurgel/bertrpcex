@@ -11,10 +11,19 @@ defmodule BertrpcEx.Worker do
   end
 
   def init(args) do
-    if Enum.all?([:host, :port], Keyword.has_key?(args, &1)) do
-      {:ok, ServerInfo.new(port: args[:port], host: args[:host])}
+    try do
+      servers = lc server inlist args[:servers], do: build_server_info(server)
+      {:ok, Enum.shuffle(servers)}
+    rescue
+      ArgumentError -> {:stop, {:error, "Host and Port must be defined for each server"}}
+    end
+  end
+
+  defp build_server_info(server) do
+    if Enum.all?([:host, :port], Keyword.has_key?(server, &1)) do
+      ServerInfo.new(port: server[:port], host: server[:host])
     else
-      {:stop, {:error, "Host and Port must be defined"}}
+      raise ArgumentError, message: "Server must define host and port"
     end
   end
 
@@ -29,7 +38,8 @@ defmodule BertrpcEx.Worker do
     end
   end
 
-  def handle_call({module, func, args}, _from, server_info) do
+  def handle_call({module, func, args}, _from, [server_info | servers]) do
+    next_servers = servers ++ [server_info]
     {:ok, socket} = establish_connection(server_info)
     data = Bertex.encode({:call, module, func, args})
     :ok = :gen_tcp.send(socket, data)
@@ -39,16 +49,16 @@ defmodule BertrpcEx.Worker do
         case Bertex.decode(recv_data) do
           {:reply, result} ->
             Lager.debug("Received #{result}")
-            {:reply, result, server_info}
+            {:reply, result, next_servers}
           error -> Lager.error('Received unexpected data: ~p', [error])
-            {:reply, {:error, error}, server_info}
+            {:reply, {:error, error}, next_servers}
         end
       {:error, :timeout} ->
         Lager.info("Timed out")
-        {:reply, :error, server_info}
+        {:reply, :error, next_servers}
       {:error, :closed} ->
         Lager.info("TCP socket closed")
-        {:reply, :error, server_info}
+        {:reply, :error, next_servers}
       {:error, reason} ->
         Lager.error('Undefined error, reason: ~p',[reason])
         exit(reason)
@@ -60,14 +70,15 @@ defmodule BertrpcEx.Worker do
     {:reply, :ok, state}
   end
 
-  def handle_cast({module, func, args}, server_info) do
+  def handle_cast({module, func, args}, [server_info | servers]) do
+    next_servers = servers ++ [server_info]
     {:ok, socket} = establish_connection(server_info)
     data = Bertex.encode({:cast, module, func, args})
     case :gen_tcp.send(socket, data) do
       :ok -> :ok
       {:error, reason} -> Lager.error('Error while sending ~p, reason: ~p', [data, reason])
     end
-    {:noreply, server_info}
+    {:noreply, next_servers}
   end
 
   def handle_cast({_msg, state}) do

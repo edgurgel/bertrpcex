@@ -18,9 +18,12 @@ defmodule BertrpcEx.Mixfile do
           {[:ext, :nat],
             [size: 10,
              max_overflow: 20],
-            [host: {127,0,0,1},
-             port: 8000]}
-          ]
+            [servers: [
+              [host: {127,0,0,1}, port: 8000],
+              [host: {127,0,0,1}, port: 7999] ]
+            ]
+          }
+        ]
       ],
     mod: { BertrpcEx, [] }]
   end
