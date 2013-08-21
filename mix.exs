@@ -16,12 +16,9 @@ defmodule BertrpcEx.Mixfile do
       env: [
         pools: [
           {[:ext, :nat],
-            [size: 10,
-             max_overflow: 20],
-            [servers: [
-              [host: {127,0,0,1}, port: 8000],
-              [host: {127,0,0,1}, port: 7999] ]
-            ]
+           [size: 10,
+            max_overflow: 20],
+           [host: {127,0,0,1}, port: 8000]
           }
         ]
       ],
