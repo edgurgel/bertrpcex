@@ -40,7 +40,6 @@ defmodule BertrpcEx.Worker do
   end
 
   def handle_call({module, func, args}, _from, server_info) do
-    IO.inspect server_info
     socket = server_info.socket
     data = Bertex.encode({:call, module, func, args})
     :ok = :gen_tcp.send(socket, data)
