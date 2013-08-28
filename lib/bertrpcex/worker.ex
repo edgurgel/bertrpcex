@@ -42,29 +42,36 @@ defmodule BertrpcEx.Worker do
   def handle_call({module, func, args}, _from, server_info) do
     socket = server_info.socket
     data = Bertex.encode({:call, module, func, args})
-    :ok = :gen_tcp.send(socket, data)
-    reply = case :gen_tcp.recv(socket, 0, @timeout) do
-      {:ok, recv_data} ->
-        Lager.debug("Received data")
-        case Bertex.decode(recv_data) do
-          {:reply, result} ->
-            Lager.debug("Received #{result}")
-            {:reply, result, server_info}
-          error -> Lager.error('Received unexpected data: ~p', [error])
-            {:reply, {:error, error}, server_info}
-        end
-      {:error, :timeout} ->
-        Lager.info("Timed out")
-        {:reply, :error, server_info}
-      {:error, :closed} ->
-        Lager.info("TCP socket closed")
-        {:ok, new_socket} = establish_connection(server_info)
-        {:reply, :error, server_info.socket(new_socket)}
+    case :gen_tcp.send(socket, data) do
       {:error, reason} ->
-        Lager.error('Undefined error, reason: ~p',[reason])
-        exit(reason)
+        Lager.error("Connection lost: #{reason}")
+        {:ok, socket} = establish_connection(server_info)
+        handle_call({module, func, args}, _from, server_info.socket(socket))
+      :ok ->
+        reply = case :gen_tcp.recv(socket, 0, @timeout) do
+          {:ok, recv_data} ->
+            Lager.debug("Received data")
+            case Bertex.decode(recv_data) do
+              {:reply, result} ->
+                Lager.debug("Received #{result}")
+                {:reply, result, server_info}
+              error -> Lager.error('Received unexpected data: ~p', [error])
+                {:reply, {:error, error}, server_info}
+            end
+          {:error, :timeout} ->
+            Lager.info("Timed out")
+            {:reply, :error, server_info}
+          {:error, :closed} ->
+            Lager.info("TCP socket closed")
+            {:ok, new_socket} = establish_connection(server_info)
+            {:reply, :error, server_info.socket(new_socket)}
+          {:error, reason} ->
+            Lager.error('Undefined error, reason: ~p',[reason])
+            exit(reason)
+        end
+        reply
+
     end
-    reply
   end
   def handle_call(_request, _from, state) do
     {:reply, :ok, state}
