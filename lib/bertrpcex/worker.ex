@@ -63,8 +63,8 @@ defmodule BertrpcEx.Worker do
             {:reply, :error, server_info}
           {:error, :closed} ->
             Lager.info("TCP socket closed")
-            {:ok, new_socket} = establish_connection(server_info)
-            {:reply, :error, server_info.socket(new_socket)}
+            {:ok, socket} = establish_connection(server_info)
+            handle_call({module, func, args}, _from, server_info.socket(socket))
           {:error, reason} ->
             Lager.error('Undefined error, reason: ~p',[reason])
             exit(reason)
