@@ -28,7 +28,7 @@ defmodule BertrpcEx.Worker do
     end
   end
 
-  def establish_connection(server_info) do
+  defp establish_connection(server_info) do
     Lager.info('Establishing connection to ~p on port ~p', [server_info.host, server_info.port])
     case :gen_tcp.connect(server_info.host, server_info.port, [:binary, {:packet, 4}, {:active, false}]) do
       {:ok, socket} -> {:ok, socket}
@@ -39,14 +39,13 @@ defmodule BertrpcEx.Worker do
     end
   end
 
-  def handle_call({module, func, args}, _from, server_info) do
+  def handle_call({module, func, args}, from, server_info) do
     socket = server_info.socket
     data = Bertex.encode({:call, module, func, args})
     case :gen_tcp.send(socket, data) do
       {:error, reason} ->
         Lager.error("Connection lost: #{reason}")
-        {:ok, socket} = establish_connection(server_info)
-        handle_call({module, func, args}, _from, server_info.socket(socket))
+        retry_handle_call({module, func, args}, from, server_info)
       :ok ->
         reply = case :gen_tcp.recv(socket, 0, @timeout) do
           {:ok, recv_data} ->
@@ -63,18 +62,21 @@ defmodule BertrpcEx.Worker do
             {:reply, :error, server_info}
           {:error, :closed} ->
             Lager.info("TCP socket closed")
-            {:ok, socket} = establish_connection(server_info)
-            handle_call({module, func, args}, _from, server_info.socket(socket))
+            retry_handle_call({module, func, args}, from, server_info)
           {:error, reason} ->
             Lager.error('Undefined error, reason: ~p',[reason])
             exit(reason)
         end
         reply
-
     end
   end
   def handle_call(_request, _from, state) do
     {:reply, :ok, state}
+  end
+
+  defp retry_handle_call(arguments, from, server_info) do
+    {:ok, socket} = establish_connection(server_info)
+    handle_call(arguments, from, server_info.socket(socket))
   end
 
   def handle_cast({module, func, args}, server_info) do

@@ -19,8 +19,21 @@ defmodule BertrpcEx.WorkerTest do
     :meck.expect(:gen_tcp, :send, 2, :ok)
     :meck.expect(:gen_tcp, :recv, 3, {:ok, :recv_data})
     :meck.expect(Bertex, :decode, 1, {:reply, :result})
-    :meck.expect(:gen_tcp, :close, 1, :ok)
     server_info = BertrpcEx.Worker.ServerInfo.new(host: :host, port: :port, socket: :socket)
+    assert handle_call({:module, :func, [:args]}, :pid, server_info) == {:reply, :result, server_info}
+    assert :meck.validate :gen_tcp
+    assert :meck.validate Bertex
+  end
+
+  test "a retried successful BERTRPC call" do
+    :meck.expect(Bertex, :encode, 1, :encoded_data)
+    # First time an error, then :ok
+    :meck.expect(:gen_tcp, :send, 2, :meck.seq([{:error, :reason}, :ok]))
+    :meck.expect(:gen_tcp, :connect, 3, {:ok, :socket})
+    :meck.expect(:gen_tcp, :recv, 3, {:ok, :recv_data})
+    :meck.expect(Bertex, :decode, 1, {:reply, :result})
+    server_info = BertrpcEx.Worker.ServerInfo.new(host: :host, port: :port, socket: :socket)
+
     assert handle_call({:module, :func, [:args]}, :pid, server_info) == {:reply, :result, server_info}
     assert :meck.validate :gen_tcp
     assert :meck.validate Bertex

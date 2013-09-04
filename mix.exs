@@ -33,7 +33,7 @@ defmodule BertrpcEx.Mixfile do
 
   defp deps(:test) do
     deps(:dev) ++
-     [ {:meck, github: "eproxus/meck", tag: "0.7.2" } ]
+     [ {:meck, github: "eproxus/meck", tag: "0.8.1" } ]
   end
 
   defp deps(_) do
