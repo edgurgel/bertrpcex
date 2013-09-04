@@ -46,6 +46,10 @@ defmodule BertrpcEx.WorkerTest do
     assert init(port: 8080) == {:stop, {:error, "Host and Port must be defined for each server"}}
   end
 
+  test "handle_info does nothing" do
+    assert handle_info(:info, :state) == {:noreply, :state}
+  end
+
   test "terminate always return :ok" do
     server_info = BertrpcEx.Worker.ServerInfo.new(host: :host, port: :port, socket: :socket)
     :meck.expect(:gen_tcp, :close, 1, :ok)
