@@ -94,8 +94,8 @@ defmodule BertrpcEx.Worker do
     {:noreply, state}
   end
 
-  def terminate(_, _) do
-    :ok
+  def terminate(_, server_info) do
+    :gen_tcp.close(server_info.socket)
   end
 
   def code_change(_, state, _) do
