@@ -86,20 +86,14 @@ defmodule BertrpcEx.Worker do
     {:noreply, server_info}
   end
 
-  def handle_cast({_msg, state}) do
-    {:noreply, state}
-  end
+  def handle_cast({_msg, state}), do: {:noreply, state}
 
-  def handle_info(_, state) do
-    {:noreply, state}
-  end
+  def handle_info(_, state), do: {:noreply, state}
 
   def terminate(_, server_info) do
     :gen_tcp.close(server_info.socket)
   end
 
-  def code_change(_, state, _) do
-    {:ok, state}
-  end
+  def code_change(_, state, _), do: {:ok, state}
 
 end
