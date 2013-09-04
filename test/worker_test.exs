@@ -50,7 +50,7 @@ defmodule BertrpcEx.WorkerTest do
     server_info = BertrpcEx.Worker.ServerInfo.new(host: :host, port: :port, socket: :socket)
     :meck.expect(:gen_tcp, :close, 1, :ok)
 
-    assert terminate(:reason, server_info)
+    assert terminate(:reason, server_info) == :ok
     assert :meck.validate :gen_tcp
   end
 
