@@ -13,16 +13,12 @@ The configuration is done directly on each pool, this is part of the .app (as ex
 ```elixir
 env: [
   pools: [
-    {[:ext, :nat],
-      [size: 10,
-       max_overflow: 20],
-      [servers: [
-        [host: {127,0,0,1}, port: 8000],
-        [host: {127,0,0,1}, port: 7999] ]
-      ]
+    { [:ext, :nat],
+      [size: 10, max_overflow: 20],
+      [host: {127,0,0,1}, port: 8000]
     }
   ]
-],
+]
 ```
 
 This configuration means:
