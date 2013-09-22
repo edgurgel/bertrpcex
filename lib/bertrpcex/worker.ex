@@ -30,7 +30,14 @@ defmodule BertrpcEx.Worker do
 
   defp establish_connection(server_info) do
     Lager.info('Establishing connection to ~p on port ~p', [server_info.host, server_info.port])
-    case :gen_tcp.connect(server_info.host, server_info.port, [:binary, {:packet, 4}, {:active, false}]) do
+    options = [
+                :binary,
+                {:packet, 4},
+                {:active, false},
+                {:send_timeout, @timeout},
+                {:send_timeout_close, true}
+              ]
+    case :gen_tcp.connect(server_info.host, server_info.port, options) do
       {:ok, socket} -> {:ok, socket}
       error ->
         Lager.error('Unable to establish connection: ~p', [error])
