@@ -23,7 +23,7 @@ env: [
 
 This configuration means:
 
-Module ext and nat are hosted at 127.0.0.1 at 8000 and 7999 on pools of size 10 and max_overflow 20 each
+Module ext and nat are hosted at 127.0.0.1 at 8000 on pools of size 10 and max_overflow 20 each
 
 Usage:
 
