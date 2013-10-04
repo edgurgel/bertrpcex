@@ -1,5 +1,5 @@
 [ "bertex": {:git, "git://github.com/edgurgel/bertex.git", "cda8bb1a6238c365c7a82a7c7115472e6af08670", [{:tag, "1.1.1"}]},
-  "exlager": {:git, "git://github.com/khia/exlager.git", "b50e47abe39b2cb28fa431f0af4390c2324bf229", []},
+  "exlager": {:git, "git://github.com/khia/exlager.git", "0b840aae773e6eb6de7cdbb703b47031b6608bfb", []},
   "goldrush": {:git, "git://github.com/DeadZen/goldrush.git", "879c69874a555b2c13498aa4a3da6f6bbbb6a031", [{:tag, "879c69874a"}]},
   "lager": {:git, "https://github.com/basho/lager.git", "2965c23f46301afeb7d62f6fbac99b3ab367f6b2", []},
   "meck": {:git, "git://github.com/eproxus/meck.git", "1286aba1cb6bbd6c9fc3f817740758b224843ee7", [{:tag, "0.8.1"}]},
